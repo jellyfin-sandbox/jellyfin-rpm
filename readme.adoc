@@ -1,0 +1,35 @@
+[[jellyfin-rpm]]
+= Jellyfin-rpm
+
+Part of the link:https://jellyfin.org[Jellyfin Project]
+
+image:https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/banner-logo-solid.svg?sanitize=true[Jellyfin Logo Banner]
+
+image:https://img.shields.io/github/license/jellyfin-sandbox/jellyfin-rpm.svg[GPL 3.0 license,link="https://github.com/jellyfin-sandbox/jellyfin-rpm"]
+image:https://img.shields.io/opencollective/all/jellyfin.svg?label=backers[Donate,link="https://opencollective.com/jellyfin"]
+image:https://img.shields.io/matrix/jellyfin-dev:matrix.org.svg?logo=matrix[Chat on Matrix,link="https://matrix.to/#/+jellyfin-dev:matrix.org"]
+image:https://img.shields.io/badge/reddit-r%2Fjellyfin-%23FF5700.svg[Join our Subreddit,link="https://www.reddit.com/r/jellyfin"]
+
+'''
+
+[CAUTION]
+====
+Please take note that this package, while official, is mainly maintained by the Jellyfin coimmunity, as we have no core developer actively maintaining the RPM spec.
+====
+
+This repository holds all the necessary scripts, workflows and descriptors to build and release the official Jellyfin RPM packages for Fedora, Rocky Linux and other Fedora/RHEL based derivatives or distros using the RPM packaging format.
+
+== Contributing
+
+All kinds of contributions are welcome as long as they conform to the contribution guidelines set forth by the link:https://github.com/jellyfin/.github/blob/master/CONTRIBUTING.md[Organisation global guidelines].
+Additionally, we request that you open an issue or ask in our official chats if you plan to make bigger changes.
+
+== Licence
+
+image:https://www.gnu.org/graphics/gplv3-or-later.svg[link="https://opensource.org/licenses/GPL-3.0"]
+
+The scope of the root licence of this repository solely covers the GHA Workflow scripts, `.github` folder content, readme and repository utility files.
+All of which are provided under the terms of the GNU Public Licence 3 or later.
+
+The rest of this repository is covered by the Licence files contained within the closest root directory to the file in question.
+This is due to the nature of the source of these files, which where originally extracted from the jellyfin-server and jellyfin-web respectively.
