@@ -3,44 +3,54 @@ FROM registry.fedoraproject.org/fedora:36
 ARG DOTNET_SDK_VERSION=6.0.402
 ARG NODEJS_VERSION=16.18.0
 
-ENV ASPNETCORE_URLS="" \
+ENV DOTNET_RUNNING_IN_CONTAINER=true \
+    ASPNETCORE_URLS="" \
     DOTNET_NOLOGO=true \
     DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
     DOTNET_USE_POLLING_FILE_WATCHER=true \
     NUGET_XMLDOC_MODE=skip
 
-# rpm build rependencies
+# rpm build and dotnet rependencies
 RUN dnf install -yq \
-      git \
-      wget \
-      curl \
-      gzip \
-      ca-certificates \
-      rpm-build \
-      rpmdevtools \
-      dnf-plugins-core \
-      libcurl-devel \
-      fontconfig-devel \
-      freetype-devel \
-      openssl-devel \
-      glibc-devel \
-      libicu-devel \
-      systemd \
-      autoconf \
-      automake \
-      make \
+        git \
+        wget \
+        curl \
+        gzip \
+        ca-certificates \
+        rpm-build \
+        rpmdevtools \
+        dnf-plugins-core \
+        libcurl-devel \
+        fontconfig-devel \
+        freetype-devel \
+        openssl-devel \
+        glibc-devel \
+        gcc \
+        gcc-c++ \
+        libicu-devel \
+        systemd \
+        autoconf \
+        automake \
+        make \
+        krb5-libs \
+        libicu \
+        openssl-libs \
+        zlib \
     && dnf clean -yq all
 
 # Install .NET SDK
-RUN curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/${DOTNET_SDK_VERSION}/dotnet-sdk-${DOTNET_SDK_VERSION}-linux-x64.tar.gz \
-    && mkdir -p /usr/share/dotnet \
-    && tar -oxzf dotnet.tar.gz -C /usr/share/dotnet ./packs ./sdk ./sdk-manifests ./templates ./LICENSE.txt ./ThirdPartyNotices.txt \
+RUN set -ex \
+    && curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/${DOTNET_SDK_VERSION}/dotnet-sdk-${DOTNET_SDK_VERSION}-linux-x64.tar.gz \
+    && mkdir -p /usr/local/dotnet \
+    && tar -oxzf dotnet.tar.gz -C /usr/local/dotnet \
+    && ln -s /usr/local/dotnet/dotnet /usr/local/bin/dotnet \
     && rm dotnet.tar.gz \
     # Smoke Tests
     && dotnet --version
 
 # Install NodeJS
-RUN curl -fSL --output nodejs.tar.gz https://nodejs.org/download/release/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz \
+RUN set -ex \
+    && curl -fSL --output nodejs.tar.gz https://nodejs.org/download/release/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz \
     && tar -xJf nodejs.tar.gz -C /usr/local --strip-components=1 --no-same-owner \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs \
     # Smoke Tests
