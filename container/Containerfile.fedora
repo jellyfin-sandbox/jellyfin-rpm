@@ -9,13 +9,14 @@ ENV ASPNETCORE_URLS="" \
     DOTNET_USE_POLLING_FILE_WATCHER=true \
     NUGET_XMLDOC_MODE=skip
 
+# rpm build rependencies
 RUN dnf install -yq \
       git \
       wget \
       curl \
       gzip \
       ca-certificates \
-      @buildsys-build \
+      rpm-build \
       rpmdevtools \
       dnf-plugins-core \
       libcurl-devel \
