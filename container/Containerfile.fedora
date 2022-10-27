@@ -40,9 +40,9 @@ RUN dnf install -yq \
 
 # Install .NET SDK
 RUN set -ex \
-    && curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/${DOTNET_SDK_VERSION}/dotnet-sdk-${DOTNET_SDK_VERSION}-linux-x64.tar.gz \
+    && curl -fsSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/${DOTNET_SDK_VERSION}/dotnet-sdk-${DOTNET_SDK_VERSION}-linux-x64.tar.gz \
     && mkdir -p /usr/local/dotnet \
-    && tar -oxzf dotnet.tar.gz -C /usr/local/dotnet \
+    && tar -xzf dotnet.tar.gz -C /usr/local/dotnet --no-same-owner \
     && ln -s /usr/local/dotnet/dotnet /usr/local/bin/dotnet \
     && rm dotnet.tar.gz \
     # Smoke Tests
@@ -50,8 +50,8 @@ RUN set -ex \
 
 # Install NodeJS
 RUN set -ex \
-    && curl -fSL --output nodejs.tar.gz https://nodejs.org/download/release/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz \
-    && tar -xJf nodejs.tar.gz -C /usr/local --strip-components=1 --no-same-owner \
+    && curl -fsSL --output nodejs.tar.gz https://nodejs.org/download/release/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz \
+    && tar -xzf nodejs.tar.gz -C /usr/local --strip-components=1 --no-same-owner \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs \
     # Smoke Tests
     && node --version \
