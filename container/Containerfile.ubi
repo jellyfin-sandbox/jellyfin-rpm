@@ -1,0 +1,47 @@
+FROM registry.access.redhat.com/ubi9:9.0.0
+
+ARG DOTNET_SDK_VERSION=6.0.42
+ARG NODEJS_VERSION=16.18.0
+
+ENV ASPNETCORE_URLS="" \
+    DOTNET_NOLOGO=true \
+    DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
+    DOTNET_USE_POLLING_FILE_WATCHER=true \
+    NUGET_XMLDOC_MODE=skip
+
+RUN dnf install -yq \
+      git \
+      wget \
+      curl \
+      gzip \
+      ca-certificates \
+      @buildsys-build \
+      rpmdevtools \
+      dnf-plugins-core \
+      libcurl-devel \
+      fontconfig-devel \
+      freetype-devel \
+      openssl-devel \
+      glibc-devel \
+      libicu-devel \
+      systemd \
+      autoconf \
+      automake \
+      make \
+    && dnf clean -yq all
+
+# Install .NET SDK
+RUN curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/${DOTNET_SDK_VERSION}/dotnet-sdk-${DOTNET_SDK_VERSION}-linux-x64.tar.gz \
+    && mkdir -p /usr/share/dotnet \
+    && tar -oxzf dotnet.tar.gz -C /usr/share/dotnet ./packs ./sdk ./sdk-manifests ./templates ./LICENSE.txt ./ThirdPartyNotices.txt \
+    && rm dotnet.tar.gz \
+    # Smoke Tests
+    && dotnet --version
+
+# Install NodeJS
+RUN curl -fSL --output nodejs.tar.gz https://nodejs.org/download/release/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz \
+    && tar -xJf nodejs.tar.gz -C /usr/local --strip-components=1 --no-same-owner \
+    && ln -s /usr/local/bin/node /usr/local/bin/nodejs \
+    # Smoke Tests
+    && node --version \
+    && npm --version

@@ -1,0 +1,54 @@
+name: "🗜️ Pre-Build Package Container"
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - container/**
+  workflow_dispatch:
+
+permissions:
+  contents: read  # reading repo content
+  packages: write # publishing image to ghcr.io
+
+jobs:
+  buildContianer:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        distro:
+          - fedora
+          - ubi
+      fail-fast: false
+    steps:
+      - name: "Checkout Repository"
+        uses: actions/checkout@v3
+
+      - name: "Gather Variables"
+        run: |-
+          echo "CONTAINER_TAGS=${{ matrix.distro }}-$(date -u +'%Y%m%d')" >> $GITHUB_ENV
+          echo "IMG_CREATED=$(date -u +'%Y-%m-%dT%H:%M:%S.%NZ')" >> $GITHUB_ENV
+
+      - name: "Build Container Image"
+        id: containerBuild
+        uses: redhat-actions/buildah-build@v2.10
+        with:
+          image: jellyfin-rpm-builder
+          oci: true
+          tags: ${{ env.CONTAINER_TAGS }}
+          labels: |-
+            org.opencontainers.image.created=${{ env.IMG_CREATED }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository_owner }}/jellyfin-rpm
+          context: container
+          containerfiles: container/Containerfile.${{ matrix.distro }}
+
+      - name: "Push Container Image to ghcr.io"
+        uses: redhat-actions/push-to-registry@v2.6
+        with:
+          image: ${{ steps.containerBuild.outputs.image }}
+          tags: ${{ steps.containerBuild.outputs.tags }}
+          registry: ghcr.io/${{ github.repository_owner }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
