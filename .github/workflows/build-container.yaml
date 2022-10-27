@@ -19,7 +19,7 @@ jobs:
       matrix:
         distro:
           - fedora
-          - ubi
+          - rockylinux
       fail-fast: false
     steps:
       - name: "Checkout Repository"
