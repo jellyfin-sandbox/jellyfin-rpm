@@ -33,7 +33,7 @@ jobs:
       - gatherFacts
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/${{ github.repository_owner }}/jellyfin-rpm-builder:debian-20221018
+      image: ghcr.io/${{ github.repository_owner }}/jellyfin-rpm-builder:fedora-20221027
     steps:
       - name: "Checkout RPM Repository"
         uses: actions/checkout@v3
