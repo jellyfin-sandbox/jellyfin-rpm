@@ -10,7 +10,7 @@ URL:            https://jellyfin.org
 Source0:        jellyfin-web-%{version}.tar.gz
 
 BuildArch:		noarch
-%if %{getenv:MANUAL_PROVIDED_DEPENDENCIES} != "true"
+%if "%{getenv:MANUAL_PROVIDED_DEPENDENCIES}" != "true"
 %if 0%{?rhel} > 0 && 0%{?rhel} < 8
 BuildRequires:	nodejs
 %else
