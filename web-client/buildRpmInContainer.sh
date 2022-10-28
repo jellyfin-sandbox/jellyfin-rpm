@@ -5,9 +5,11 @@ set -exu
 HOME="$(pwd)"
 SOURCE_DIR="$(pwd)/jellyfin-web"
 RPMBUILD_HOME="$(pwd)/rpmbuild"
+MANUAL_PROVIDED_DEPENDENCIES="true"
 export HOME
 export SOURCE_DIR
 export RPMBUILD_HOME
+export MANUAL_PROVIDED_DEPENDENCIES
 
 mkdir rpmbuild
 
