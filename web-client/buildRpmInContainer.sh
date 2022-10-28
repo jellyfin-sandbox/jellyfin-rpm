@@ -2,7 +2,12 @@
 
 set -exu
 
-RPMBUILD_HOME=$(pwd)/rpmbuild
+HOME="$(pwd)"
+SOURCE_DIR="$(pwd)/jellyfin-web"
+RPMBUILD_HOME="$(pwd)/rpmbuild"
+export HOME
+export SOURCE_DIR
+export RPMBUILD_HOME
 
 mkdir rpmbuild
 
