@@ -60,7 +60,7 @@ jobs:
           path: out
           if-no-files-found: error
 
-  publishDeb:
+  publishRpm:
     needs:
       - gatherFacts
       - buildRpm
