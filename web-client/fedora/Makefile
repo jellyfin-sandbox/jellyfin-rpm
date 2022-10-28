@@ -1,6 +1,4 @@
 DIR     := $(dir $(lastword $(MAKEFILE_LIST)))
-# install git and npm
-$(info $(shell set -x; if [ "$$(id -u)" = "0" ]; then echo "Installing git"; dnf -y install git npm; fi))
 NAME    := jellyfin-web
 VERSION := $(shell set -x; sed -ne '/^Version:/s/.*  *//p' $(DIR)/$(NAME).spec)
 RELEASE := $(shell set -x; sed -ne '/^Release:/s/.*  *\(.*\)%{.*}.*/\1/p' $(DIR)/$(NAME).spec)
