@@ -23,4 +23,4 @@ popd
 
 # move the artifacts
 mkdir out
-mv "${RPMBUILD_HOME}"/RPMS/noarch/jellyfin-*.rpm "${RPMBUILD_HOME}"/SRPMS/jellyfin-*.src.rpm out
+mv "${RPMBUILD_HOME}"/RPMS/x86_64/jellyfin-*.rpm "${RPMBUILD_HOME}"/SRPMS/jellyfin-*.src.rpm out
