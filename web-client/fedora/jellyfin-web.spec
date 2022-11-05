@@ -1,7 +1,7 @@
 %global         debug_package %{nil}
 
 Name:           jellyfin-web
-Version:        10.8.0
+Version:        10.9.0
 Release:        1%{?dist}
 Summary:        The Free Software Media System web client
 License:        GPLv2
