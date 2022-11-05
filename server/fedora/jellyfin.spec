@@ -19,9 +19,11 @@ Source17:       jellyfin-server-lowports.conf
 %{?systemd_requires}
 BuildRequires:  systemd
 BuildRequires:  libcurl-devel, fontconfig-devel, freetype-devel, openssl-devel, glibc-devel, libicu-devel
+%if "%{getenv:MANUAL_PROVIDED_DEPENDENCIES}" != "true"
 # Requirements not packaged in RHEL 7 main repos, added via Makefile
 # https://packages.microsoft.com/rhel/7/prod/
 BuildRequires:  dotnet-runtime-6.0, dotnet-sdk-6.0
+%endif
 Requires: %{name}-server = %{version}-%{release}, %{name}-web = %{version}-%{release}
 
 # Temporary (hopefully?) fix for https://github.com/jellyfin/jellyfin/issues/7471

@@ -1,5 +1,4 @@
 DIR     := $(dir $(lastword $(MAKEFILE_LIST)))
-INSTGIT := $(shell if [ "$$(id -u)" = "0" ]; then dnf -y install git; fi)
 NAME    := jellyfin-server
 VERSION := $(shell sed -ne '/^Version:/s/.*  *//p' $(DIR)/jellyfin.spec)
 RELEASE := $(shell sed -ne '/^Release:/s/.*  *\(.*\)%{.*}.*/\1/p' $(DIR)/jellyfin.spec)
