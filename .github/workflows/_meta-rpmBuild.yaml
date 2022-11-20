@@ -1,0 +1,58 @@
+on:
+  workflow_call:
+    inputs:
+      buildOs:
+        required: true
+        type: string
+        description: The OS the rpm is build on (i.e. fedora)
+      buildImageTag:
+        required: true
+        type: string
+        description: The tag of the jellyfin-rpm-builder image (i.e. fedora-20221027).
+      rpmSpec:
+        required: true
+        type: string
+        description: The folder name containing the rpm speck to build (i.e. server).
+      repository:
+        required: true
+        type: string
+        description: The jellyfin code repository to package with the selected rpm descriptor (i.e. jellyfin/jellyfin).
+      repositoryRef:
+        required: true
+        type: string
+        description: The jellyfin code repository ref to package with the selected rpm descriptor (i.e. a given git hash or a git tag).
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  buildRpm:
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/jellyfin-rpm-builder:${{ inputs.buildImageTag }}
+    steps:
+      - name: "Checkout RPM Repository"
+        uses: actions/checkout@v3
+        with:
+          path: jellyfin-rpm
+
+      - name: "Checkout Code Repository"
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.repositoryRef }}
+          path: jellyfin-code
+
+      - name: "Copy fedora Folder"
+        run: cp -r jellyfin-rpm/${{ inputs.rpmSpec }}/* jellyfin-code
+
+      - name: "Build RPM"
+        run: bash jellyfin-code/buildRpmInContainer.sh
+
+      - name: "Publish Validation Artifact"
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.rpmSpec }}-${{ inputs.buildOs }}-rpm
+          path: out
+          if-no-files-found: error

@@ -3,10 +3,6 @@ name: "📦 Build Server Package"
 on:
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: bash
-
 permissions:
   contents: read
 
@@ -30,42 +26,33 @@ jobs:
           echo "APP_VERSION=$(yq --exit-status '.version' server/metaValues.yaml)" >> ${GITHUB_OUTPUT}
           echo "APP_GIT_SHA=$(yq --exit-status '.git_sha' server/metaValues.yaml)" >> ${GITHUB_OUTPUT}
 
-  buildRpm:
+  fedora:
     needs:
       - gatherFacts
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/${{ github.repository_owner }}/jellyfin-rpm-builder:fedora-20221027
-    steps:
-      - name: "Checkout RPM Repository"
-        uses: actions/checkout@v3
-        with:
-          path: jellyfin-rpm
+    uses: ./.github/workflows/_meta-rpmBuild.yaml
+    with:
+      buildOs: fedora
+      buildImageTag: fedora-20221027
+      rpmSpec: server
+      repository: ${{ needs.gatherFacts.outputs.appRepo }}
+      repositoryRef: ${{ needs.gatherFacts.outputs.appGitSha }}
 
-      - name: "Checkout Code Repository"
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ needs.gatherFacts.outputs.appRepo }}
-          ref: ${{ needs.gatherFacts.outputs.appGitSha }}
-          path: jellyfin-code
-
-      - name: "Copy fedora Folder"
-        run: cp -r jellyfin-rpm/server/* jellyfin-code
-
-      - name: "Build RPM"
-        run: bash jellyfin-code/buildRpmInContainer.sh
-
-      - name: "Publish Validation Artifact"
-        uses: actions/upload-artifact@v3
-        with:
-          name: server-rpm
-          path: out
-          if-no-files-found: error
+  rockyLinux:
+    needs:
+      - gatherFacts
+    uses: ./.github/workflows/_meta-rpmBuild.yaml
+    with:
+      buildOs: rockylinux
+      buildImageTag: rockylinux-20221027
+      rpmSpec: server
+      repository: ${{ needs.gatherFacts.outputs.appRepo }}
+      repositoryRef: ${{ needs.gatherFacts.outputs.appGitSha }}
 
   publishRpm:
     needs:
       - gatherFacts
-      - buildRpm
+      - fedora
+      - rockyLinux
     if: ${{ ! contains(needs.gatherFacts.outputs.appVersion, 'unstable') }}
     runs-on: ubuntu-22.04
     steps:
