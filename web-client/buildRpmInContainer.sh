@@ -3,7 +3,7 @@
 set -exu
 
 HOME="$(pwd)"
-SOURCE_DIR="$(pwd)/jellyfin-web"
+SOURCE_DIR="$(pwd)/jellyfin-code"
 RPMBUILD_HOME="$(pwd)/rpmbuild"
 MANUAL_PROVIDED_DEPENDENCIES="true"
 export HOME
@@ -13,7 +13,7 @@ export MANUAL_PROVIDED_DEPENDENCIES
 
 mkdir rpmbuild
 
-pushd jellyfin-web
+pushd jellyfin-code
 
 # build rpm
 make -f fedora/Makefile srpm outdir="${RPMBUILD_HOME}/SRPMS"
